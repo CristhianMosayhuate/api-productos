@@ -45,7 +45,8 @@ const obtenerProducto = async (req, res) => {
     }
 
     //Si podemos buscar (>0). Utilizaremos EXECUTE porque pasaremos parámetros
-    await pool.execute(`SELECT * FROM productos WHERE ID = ?`,[id],);
+    
+    const[registro]= await pool.execute(`SELECT * FROM productos WHERE ID = ?`,[id],);
 
     //Existe la posibilidad que NO encontremos el registro
     if (ServiceWorkerRegistration.length === 0) {
