@@ -31,7 +31,43 @@ const listarProductos = async (req, res) => {
   }
 };
 
-const obtenerProducto = async (req, res) => {};
+//Buscar ¿cómo funciona?
+//API REST => http://miaplicacion.com/api/productos/1
+const obtenerProducto = async (req, res) => {
+  try {
+    //req.params representa los parámetros enviados por la URL
+    const id = Number(req.params.id);
+    if (id <= 0) {
+      return res.status(400).json({
+        ok: false,
+        message: "El ID no puede ser negativo o cero",
+      });
+    }
+
+    //Si podemos buscar (>0). Utilizaremos EXECUTE porque pasaremos parámetros
+    await pool.execute(`SELECT * FROM productos WHERE ID = ?`, { id });
+
+    //Existe la posibilidad que NO encontremos el registro
+    if (ServiceWorkerRegistration.length === 0) {
+      return res.status(404).json({
+        ok: false,
+        message: "No existe el producto",
+      });
+    }
+
+    //Si llegamos hasta aquí, entonces SÍ existe el registro
+    res.status(200).json({
+      ok: true,
+      data: registro[0],
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      ok: false,
+      message: "error interno en el servidor",
+    });
+  }
+};
 
 const crearProducto = async (req, res) => {};
 
