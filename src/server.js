@@ -10,7 +10,7 @@ const iniciarServidor = async () => {
 
     //Levantamos los servicios
     app.listen(port, () => {
-      (console, log(`Servidor iniciado en http://localhost:${port}`));
+       console, log(`Servidor iniciado en http://localhost:${port}`);
     });
   } catch (e) {
     console.error(`No podemos conectarnos a MySQL`, e.message);
