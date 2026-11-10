@@ -49,7 +49,7 @@ const obtenerProducto = async (req, res) => {
     const[registro]= await pool.execute(`SELECT * FROM productos WHERE ID = ?`,[id],);
 
     //Existe la posibilidad que NO encontremos el registro
-    if (ServiceWorkerRegistration.length === 0) {
+    if (registro.length === 0) {
       return res.status(404).json({
         ok: false,
         message: "No existe el producto",
