@@ -12,6 +12,18 @@ const CAMPOS = "id, marca, descripcion, precio, stock"; //Dato común
 //ilisegundos, segundos (1000 = 1seg)
 //Todas las funciones reciben y envían datos (pasarelas)
 //req (require - solicitar >>>), res (result - <<< resutado)
+
+//Crear - actualizar
+const validarCampos = ({marca, descripcion, precio, stock} ={}) => {
+  const errores = []
+  if (marca.trim() === '') errores.push('La marca es obligatoria')
+  if (descripcion.trim() === '') errores.push('La descripcion es necesaria')
+  if (precio === undefined || isNaN(precio) || precio < 0) errores.push('Verifique el')
+  if (stock === undefined || !Number.isInteger(stock) || Number(stock) < 0) errores.push('Error en el stock')
+  
+  //Es posible tener más de un error
+  return errores
+}
 const listarProductos = async (req, res) => {
   //Se utiliza try - cath porque existe una probabilidad de error
   try {
@@ -70,7 +82,35 @@ const obtenerProducto = async (req, res) => {
   }
 };
 
-const crearProducto = async (req, res) => {};
+const crearProducto = async (req, res) => {
+  try {
+    const errores = validarCampos(req.body) //req.body contiene todos los a registrar
+    if (errores.length > 0){
+      return res.status(400).json({
+        ok: false,
+        message: 'Verifique los datos solicitados',
+        errores
+      })
+    }
+
+    //Procedemos a guardar los datos
+    const { marca, descripcion, precio, stock} = req.body
+    const consulta = 'INSERT INTO productos (marca, descripcion, precio, stock) VALUES (?,?,?,?)'
+    const [registro] = await pool.execute(consulta, [marca, descripcion, precio, stock])
+
+    res.status(201).json({
+      ok:true,
+      id: registro.insertId
+    })
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      ok: false,
+      message: "error interno en el servidor",
+    });
+  }
+};
+
 
 const actualizarProducto = async (req, res) => {};
 
