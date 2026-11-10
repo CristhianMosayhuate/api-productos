@@ -12,7 +12,24 @@ const CAMPOS = "id, marca, descripcion, precio, stock"; //Dato común
 //ilisegundos, segundos (1000 = 1seg)
 //Todas las funciones reciben y envían datos (pasarelas)
 //req (require - solicitar >>>), res (result - <<< resutado)
-const listarProductos = async (req, res) => {};
+const listarProductos = async (req, res) => {
+  //Se utiliza try - cath porque existe una probabilidad de error
+  try {
+    //Deserialización (obtener el primer elemento del arreglo)
+    const [productos] = await pool.query("SELECT * FROM productos ORDER BY id");
+    res.status(200).json({
+      ok: true,
+      total: productos.length,
+      data: productos,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      ok: false,
+      message: "error interno en el servidor",
+    });
+  }
+};
 
 const obtenerProducto = async (req, res) => {};
 
